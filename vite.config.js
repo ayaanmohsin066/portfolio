@@ -2,7 +2,7 @@ import {
   vitePlugin as remix,
   cloudflareDevProxyVitePlugin as remixCloudflareDevProxy,
 } from '@remix-run/dev';
-import vercel from '@vercel/remix/vite';
+
 import { defineConfig } from 'vite';
 import jsconfigPaths from 'vite-jsconfig-paths';
 import mdx from '@mdx-js/rollup';
@@ -21,7 +21,7 @@ export default defineConfig({
     port: 7777,
   },
   plugins: [
-    vercel(),
+    
     mdx({
       rehypePlugins: [[rehypeImgSize, { dir: 'public' }], rehypeSlug, rehypePrism],
       remarkPlugins: [remarkFrontmatter, remarkMdxFrontmatter],
