@@ -1,0 +1,20 @@
+@layer components {
+  .model {
+    position: relative;
+    opacity: 0;
+    cursor: grab;
+
+    &[data-loaded='true']:global {
+      animation: fade-in 1s ease forwards var(--delay);
+    }
+
+    &[data-dragging='true'] {
+      cursor: grabbing;
+    }
+  }
+
+  .canvas {
+    position: absolute;
+    inset: 0;
+  }
+}
