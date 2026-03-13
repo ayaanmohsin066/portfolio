@@ -25,7 +25,7 @@ export const meta = () => {
   return baseMeta({
     title: 'Contact',
     description:
-      'Send me a message if you're interested in discussing a project or if you just want to say hi',
+      'Send me a message if you are interested in discussing a project or if you just want to say hi',
   });
 };
 
