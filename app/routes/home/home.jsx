@@ -1,13 +1,8 @@
-import gamestackTexture2Large from '~/assets/gamestack-list-large.jpg';
-import gamestackTexture2Placeholder from '~/assets/gamestack-list-placeholder.jpg';
-import gamestackTexture2 from '~/assets/gamestack-list.jpg';
-import gamestackTextureLarge from '~/assets/gamestack-login-large.jpg';
-import gamestackTexturePlaceholder from '~/assets/gamestack-login-placeholder.jpg';
-import gamestackTexture from '~/assets/gamestack-login.jpg';
 import sliceTextureLarge from '~/assets/slice-app-large.jpg';
 import sliceTexturePlaceholder from '~/assets/slice-app-placeholder.jpg';
 import sliceTexture from '~/assets/slice-app.jpg';
-import { createSkillsDashboardCanvas } from '~/utils/skills-dashboard-canvas';
+import { createLinkedInMockupCanvas } from '~/utils/linkedin-mockup-canvas';
+import { createCourseraPhone1Canvas, createCourseraPhone2Canvas } from '~/utils/coursera-phone-canvas';
 import { Footer } from '~/components/footer';
 import { baseMeta } from '~/utils/meta';
 import { Intro } from './intro';
@@ -102,15 +97,15 @@ export const Home = () => {
         visible={visibleSections.includes(projectOne.current)}
         index={1}
         title="Honours Mathematics at University of Waterloo"
-        description="Pursuing a rigorous Honours Mathematics degree at one of Canada's top-ranked universities, with a focus on mathematical finance, statistics, and quantitative analysis — bridging pure mathematics with real-world financial applications."
+        description="Currently pursuing a Bachelor of Mathematics at the University of Waterloo. Completed first-semester coursework including calculus, linear algebra foundations, introductory computer science, and economics."
         buttonText="Learn More"
         buttonLink="/#details"
         model={{
           type: 'laptop',
-          alt: 'Skills Dashboard',
+          alt: 'LinkedIn profile',
           textures: [
             {
-              getCanvas: () => createSkillsDashboardCanvas(1280, 800),
+              getCanvas: () => createLinkedInMockupCanvas(1280, 800),
             },
           ],
         }}
@@ -121,21 +116,19 @@ export const Home = () => {
         sectionRef={projectTwo}
         visible={visibleSections.includes(projectTwo.current)}
         index={2}
-        title="Internship at Weavers International"
-        description="Gained hands-on experience in international business operations, trade logistics, and client-facing communication."
-        buttonText="View Details"
-        buttonLink="/#details"
+        title="Coursera Certifications — University of Michigan & Yale"
+        description="Completed multiple online courses through Coursera from the University of Michigan and Yale University, covering Python programming, data structures, web data access, and foundational computing skills."
+        buttonText="View Certificates"
+        buttonLink="https://linktr.ee/ayaanmohsin59"
         model={{
           type: 'phone',
-          alt: 'Weavers International',
+          alt: 'Coursera certifications — My Skills',
           textures: [
             {
-              srcSet: `${gamestackTexture} 375w, ${gamestackTextureLarge} 750w`,
-              placeholder: gamestackTexturePlaceholder,
+              getCanvas: () => createCourseraPhone1Canvas(374, 512),
             },
             {
-              srcSet: `${gamestackTexture2} 375w, ${gamestackTexture2Large} 750w`,
-              placeholder: gamestackTexture2Placeholder,
+              getCanvas: () => createCourseraPhone2Canvas(374, 512),
             },
           ],
         }}
