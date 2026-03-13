@@ -1,7 +1,6 @@
 import sliceTextureLarge from '~/assets/slice-app-large.jpg';
 import sliceTexturePlaceholder from '~/assets/slice-app-placeholder.jpg';
 import sliceTexture from '~/assets/slice-app.jpg';
-import { createLinkedInMockupCanvas } from '~/utils/linkedin-mockup-canvas';
 import { createCourseraPhone1Canvas, createCourseraPhone2Canvas } from '~/utils/coursera-phone-canvas';
 import { Footer } from '~/components/footer';
 import { baseMeta } from '~/utils/meta';
@@ -105,7 +104,8 @@ export const Home = () => {
           alt: 'LinkedIn profile',
           textures: [
             {
-              getCanvas: () => createLinkedInMockupCanvas(1280, 800),
+              srcSet: '/static/linkedin-preview.jpg 1280w',
+              placeholder: '/static/linkedin-preview.jpg',
             },
           ],
         }}

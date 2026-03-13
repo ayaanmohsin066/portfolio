@@ -1,11 +1,13 @@
 /**
- * Phone screen canvases for Coursera certifications project.
- * Screen 1: "My Skills" heading. Screen 2: Scrollable skills list with teal bullets.
+ * Phone screen canvases styled like Apple Notes — minimal, clean, no decorations.
  */
 
-const DARK_BG = '#1a1b1f';
-const ACCENT = '#00d4ff';
-const TEXT_WHITE = '#e4e4e7';
+const WHITE = '#FFFFFF';
+const BG_GREY = '#F2F2F7';
+const TEXT_BLACK = '#000000';
+const TEXT_GREY = '#8E8E93';
+const DIVIDER = '#E5E5EA';
+const FONT = '-apple-system, BlinkMacSystemFont, San Francisco, system-ui, sans-serif';
 
 const SKILLS_LIST = [
   'REST APIs',
@@ -21,7 +23,7 @@ const SKILLS_LIST = [
 ];
 
 /**
- * First phone: "My Skills" large centered heading, dark bg, teal accent.
+ * Phone 1: Apple Notes style — white background, "Notes" label, large "My Skills" title, subtle divider.
  */
 export function createCourseraPhone1Canvas(width = 374, height = 512) {
   const dpr = Math.min(2, typeof window !== 'undefined' ? window.devicePixelRatio : 2);
@@ -32,20 +34,35 @@ export function createCourseraPhone1Canvas(width = 374, height = 512) {
   if (!ctx) return canvas;
   ctx.scale(dpr, dpr);
 
-  ctx.fillStyle = DARK_BG;
+  ctx.fillStyle = WHITE;
   ctx.fillRect(0, 0, width, height);
 
-  ctx.fillStyle = ACCENT;
-  ctx.font = '600 32px system-ui, -apple-system, sans-serif';
-  ctx.textAlign = 'center';
+  const paddingX = 20;
+  const topPadding = 52;
+
+  ctx.font = `400 13px ${FONT}`;
+  ctx.fillStyle = TEXT_GREY;
+  ctx.textAlign = 'left';
   ctx.textBaseline = 'middle';
-  ctx.fillText('My Skills', width / 2, height / 2);
+  ctx.fillText('Notes', paddingX, topPadding - 28);
+
+  ctx.font = `600 26px ${FONT}`;
+  ctx.fillStyle = TEXT_BLACK;
+  ctx.fillText('My Skills', paddingX, topPadding);
+
+  const dividerY = topPadding + 24;
+  ctx.strokeStyle = DIVIDER;
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(paddingX, dividerY);
+  ctx.lineTo(width - paddingX, dividerY);
+  ctx.stroke();
 
   return canvas;
 }
 
 /**
- * Second phone: Scrollable skills list, dark bg, white text, teal bullets.
+ * Phone 2: Open Apple Note — light grey background, "Skills" title, clean list with subtle dividers.
  */
 export function createCourseraPhone2Canvas(width = 374, height = 512) {
   const dpr = Math.min(2, typeof window !== 'undefined' ? window.devicePixelRatio : 2);
@@ -56,26 +73,34 @@ export function createCourseraPhone2Canvas(width = 374, height = 512) {
   if (!ctx) return canvas;
   ctx.scale(dpr, dpr);
 
-  ctx.fillStyle = DARK_BG;
+  ctx.fillStyle = BG_GREY;
   ctx.fillRect(0, 0, width, height);
 
-  const padding = 24;
-  const lineHeight = 28;
-  const bulletRadius = 4;
-  const startY = 32;
+  const paddingX = 20;
+  const topPadding = 44;
+  const lineHeight = 36;
 
-  ctx.font = '500 15px system-ui, -apple-system, sans-serif';
+  ctx.font = `600 20px ${FONT}`;
+  ctx.fillStyle = TEXT_BLACK;
   ctx.textAlign = 'left';
   ctx.textBaseline = 'middle';
+  ctx.fillText('Skills', paddingX, topPadding);
+
+  const listStartY = topPadding + 28;
+  ctx.font = `400 16px ${FONT}`;
+  ctx.fillStyle = TEXT_BLACK;
 
   SKILLS_LIST.forEach((skill, i) => {
-    const y = startY + i * lineHeight;
-    ctx.fillStyle = ACCENT;
-    ctx.beginPath();
-    ctx.arc(padding + bulletRadius, y, bulletRadius, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.fillStyle = TEXT_WHITE;
-    ctx.fillText(skill, padding + bulletRadius * 2 + 10, y);
+    const y = listStartY + i * lineHeight;
+    ctx.fillText(skill, paddingX, y + lineHeight / 2);
+    if (i < SKILLS_LIST.length - 1) {
+      ctx.strokeStyle = DIVIDER;
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(paddingX, y + lineHeight);
+      ctx.lineTo(width - paddingX, y + lineHeight);
+      ctx.stroke();
+    }
   });
 
   return canvas;
