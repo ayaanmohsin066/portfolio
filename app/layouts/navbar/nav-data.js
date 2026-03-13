@@ -1,5 +1,3 @@
-import config from '~/config.json';
-
 export const navLinks = [
   {
     label: 'Projects',
@@ -21,18 +19,18 @@ export const navLinks = [
 
 export const socialLinks = [
   {
-    label: 'Bluesky',
-    url: `https://bsky.app/profile/${config.bluesky}`,
-    icon: 'bluesky',
+    label: 'Instagram',
+    url: 'https://www.instagram.com/ayaan_mohsin1',
+    icon: 'instagram',
   },
   {
-    label: 'Figma',
-    url: `https://www.figma.com/${config.figma}`,
-    icon: 'figma',
+    label: 'LinkedIn',
+    url: 'https://www.linkedin.com/in/ayaan-mohsin-119b57236',
+    icon: 'linkedin',
   },
   {
-    label: 'Github',
-    url: `https://github.com/${config.github}`,
-    icon: 'github',
+    label: 'Email',
+    url: 'mailto:ayaanmohsin15945@gmail.com',
+    icon: 'email',
   },
 ];

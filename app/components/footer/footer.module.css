@@ -1,24 +1,19 @@
 @layer components {
   .footer {
-    --lineHeightBody: 1.1;
-
     display: flex;
-    flex-wrap: wrap;
-    align-items: baseline;
+    align-items: center;
     justify-content: center;
-    width: 100vw;
-    padding: var(--space3XL) var(--spaceL);
+    width: 100%;
+    padding: var(--space2XL) var(--spaceL);
     z-index: var(--zIndex2);
     position: relative;
+  }
+
+  .copyright {
+    margin: 0;
+    font-size: var(--fontSizeBodyXS);
+    line-height: 1.4;
     color: var(--textLight);
-  }
-
-  .link {
-    display: inline-flex;
-  }
-
-  .date {
-    padding-right: var(--spaceXS);
-    display: inline-flex;
+    text-align: center;
   }
 }
