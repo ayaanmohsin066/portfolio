@@ -1,16 +1,17 @@
 /**
- * Draws a LinkedIn profile mockup for use as a laptop screen texture.
- * Blue header, profile area, name, title, location, connections. Navy/white scheme.
+ * Realistic LinkedIn profile mockup for laptop screen texture.
+ * Light grey page, navy bar with "in" logo, campus-style banner, white profile card, buttons.
  */
 
-const LINKEDIN_BLUE = '#0a66c2';
-const HEADER_NAVY = '#057642';
-const BG_WHITE = '#f3f6f8';
-const CARD_WHITE = '#ffffff';
-const TEXT_DARK = '#000000e6';
-const TEXT_SECONDARY = '#00000099';
+const LINKEDIN_BLUE = '#0A66C2';
+const BG_PAGE = '#F3F2EF';
+const CARD_WHITE = '#FFFFFF';
+const TEXT_BLACK = '#000000';
+const TEXT_GREY = '#00000099';
+const TEXT_GREY_LIGHT = '#666666';
 const BORDER = '#e0e0e0';
-const PROFILE_PLACEHOLDER = '#e0e0e0';
+const PROFILE_PHOTO_BG = '#e0e0e0';
+const FONT = '-apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif';
 
 /**
  * @param {number} width
@@ -30,74 +31,142 @@ export function createLinkedInMockupCanvas(width = 1280, height = 800) {
   const w = width;
   const h = height;
 
-  // Page background
-  ctx.fillStyle = BG_WHITE;
+  // Page background (LinkedIn light grey)
+  ctx.fillStyle = BG_PAGE;
   ctx.fillRect(0, 0, w, h);
 
-  // Top bar (LinkedIn blue)
+  // Top navy blue bar
   const barH = 52;
   ctx.fillStyle = LINKEDIN_BLUE;
   ctx.fillRect(0, 0, w, barH);
 
-  // Banner / cover area (light gray)
+  // "in" logo (white text on blue bar)
+  ctx.font = `600 20px ${FONT}`;
+  ctx.fillStyle = '#FFFFFF';
+  ctx.textAlign = 'left';
+  ctx.textBaseline = 'middle';
+  ctx.fillText('in', 24, barH / 2);
+
+  // Banner (University of Waterloo feel: teal/green gradient)
   const bannerH = 200;
-  ctx.fillStyle = '#e0e0e0';
+  const gradient = ctx.createLinearGradient(0, barH, 0, barH + bannerH);
+  gradient.addColorStop(0, '#0d9488');
+  gradient.addColorStop(0.5, '#0f766e');
+  gradient.addColorStop(1, '#134e4a');
+  ctx.fillStyle = gradient;
   ctx.fillRect(0, barH, w, bannerH);
 
-  // Main content card (white)
-  const cardX = Math.max(24, w * 0.12);
+  // White profile card with shadow
+  const cardX = Math.max(32, w * 0.14);
   const cardW = w - cardX * 2;
-  const cardTop = barH + bannerH - 60;
-  const cardH = 320;
+  const cardTop = barH + bannerH - 64;
+  const cardH = 340;
+  ctx.shadowColor = 'rgba(0,0,0,0.12)';
+  ctx.shadowBlur = 16;
+  ctx.shadowOffsetY = 4;
   ctx.fillStyle = CARD_WHITE;
-  ctx.shadowColor = 'rgba(0,0,0,0.08)';
-  ctx.shadowBlur = 12;
-  ctx.shadowOffsetY = 2;
-  ctx.fillRect(cardX, cardTop, cardW, cardH);
+  ctx.beginPath();
+  roundRect(ctx, cardX, cardTop, cardW, cardH, 8);
+  ctx.fill();
   ctx.shadowColor = 'transparent';
   ctx.shadowBlur = 0;
   ctx.shadowOffsetY = 0;
 
-  // Profile photo circle placeholder
-  const photoRadius = 52;
-  const photoX = cardX + 32;
-  const photoY = cardTop - photoRadius + 20;
-  ctx.fillStyle = PROFILE_PLACEHOLDER;
+  // Card border
+  ctx.strokeStyle = BORDER;
+  ctx.lineWidth = 1;
   ctx.beginPath();
-  ctx.arc(photoX + photoRadius, photoY + photoRadius, photoRadius, 0, Math.PI * 2);
+  roundRect(ctx, cardX, cardTop, cardW, cardH, 8);
+  ctx.stroke();
+
+  // Circular profile photo placeholder
+  const photoRadius = 48;
+  const photoCenterX = cardX + 40;
+  const photoCenterY = cardTop - photoRadius + 32;
+  ctx.fillStyle = PROFILE_PHOTO_BG;
+  ctx.beginPath();
+  ctx.arc(photoCenterX, photoCenterY, photoRadius, 0, Math.PI * 2);
   ctx.fill();
   ctx.strokeStyle = CARD_WHITE;
   ctx.lineWidth = 4;
   ctx.stroke();
 
-  // Name
-  ctx.fillStyle = TEXT_DARK;
-  ctx.font = '600 24px system-ui, -apple-system, sans-serif';
-  ctx.fillText('Ayaan Mohsin', photoX + photoRadius * 2 + 24, cardTop + 50);
+  // Name (bold black 22px)
+  const textLeft = cardX + 40;
+  let contentY = cardTop + 48;
+  ctx.font = `600 22px ${FONT}`;
+  ctx.fillStyle = TEXT_BLACK;
+  ctx.textAlign = 'left';
+  ctx.textBaseline = 'middle';
+  ctx.fillText('Ayaan Mohsin', textLeft, contentY);
 
-  // Title (wrapped)
+  // Title (grey 13px, wrapped)
   const title =
     'Mathematics @ University of Waterloo | Data Analysis, Python & Statistics | Aspiring Quantitative Analyst';
-  ctx.fillStyle = TEXT_SECONDARY;
-  ctx.font = '400 14px system-ui, -apple-system, sans-serif';
-  const maxTitleW = cardW - 120;
+  ctx.fillStyle = TEXT_GREY;
+  ctx.font = `400 13px ${FONT}`;
+  const maxTitleW = cardW - 80;
   const titleLines = wrapText(ctx, title, maxTitleW);
-  let ty = cardTop + 82;
+  contentY += 28;
   for (const line of titleLines) {
-    ctx.fillText(line, cardX + 32, ty);
-    ty += 20;
+    ctx.fillText(line, textLeft, contentY);
+    contentY += 18;
   }
 
-  // Location
-  ctx.font = '400 13px system-ui, -apple-system, sans-serif';
-  ctx.fillText('Waterloo, Ontario, Canada', cardX + 32, ty + 12);
+  // Location (grey 12px)
+  contentY += 6;
+  ctx.font = `400 12px ${FONT}`;
+  ctx.fillText('Waterloo, Ontario, Canada', textLeft, contentY);
 
-  // Connections
+  // 500+ connections (blue 12px)
+  contentY += 22;
   ctx.fillStyle = LINKEDIN_BLUE;
-  ctx.font = '500 13px system-ui, -apple-system, sans-serif';
-  ctx.fillText('500+ connections', cardX + 32, ty + 40);
+  ctx.font = `500 12px ${FONT}`;
+  ctx.fillText('500+ connections', textLeft, contentY);
+
+  // Buttons row
+  const btnY = contentY + 28;
+  const btnHeight = 32;
+  const btnPaddingX = 16;
+  const btnGap = 12;
+
+  // "Open to" (blue filled)
+  ctx.font = `600 14px ${FONT}`;
+  const openToW = ctx.measureText('Open to').width + btnPaddingX * 2;
+  const openToX = textLeft;
+  ctx.fillStyle = LINKEDIN_BLUE;
+  ctx.beginPath();
+  roundRect(ctx, openToX, btnY - btnHeight / 2, openToW, btnHeight, 16);
+  ctx.fill();
+  ctx.fillStyle = '#FFFFFF';
+  ctx.textAlign = 'center';
+  ctx.fillText('Open to', openToX + openToW / 2, btnY);
+
+  // "Add profile section" (outlined)
+  ctx.font = `600 14px ${FONT}`;
+  const addSectionW = ctx.measureText('Add profile section').width + btnPaddingX * 2;
+  const addSectionX = openToX + openToW + btnGap;
+  ctx.strokeStyle = LINKEDIN_BLUE;
+  ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  roundRect(ctx, addSectionX, btnY - btnHeight / 2, addSectionW, btnHeight, 16);
+  ctx.stroke();
+  ctx.fillStyle = LINKEDIN_BLUE;
+  ctx.fillText('Add profile section', addSectionX + addSectionW / 2, btnY);
 
   return canvas;
+}
+
+function roundRect(ctx, x, y, width, height, radius) {
+  ctx.moveTo(x + radius, y);
+  ctx.lineTo(x + width - radius, y);
+  ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+  ctx.lineTo(x + width, y + height - radius);
+  ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+  ctx.lineTo(x + radius, y + height);
+  ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+  ctx.lineTo(x, y + radius);
+  ctx.quadraticCurveTo(x, y, x + radius, y);
 }
 
 function wrapText(ctx, text, maxWidth) {
