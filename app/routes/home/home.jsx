@@ -3,6 +3,7 @@ import sliceTexturePlaceholder from '~/assets/slice-app-placeholder.jpg';
 import sliceTexture from '~/assets/slice-app.jpg';
 import { createLinkedInMockupCanvas } from '~/utils/linkedin-mockup-canvas';
 import { createCourseraPhone1Canvas, createCourseraPhone2Canvas } from '~/utils/coursera-phone-canvas';
+import { createExternCertificateCanvas } from '~/utils/extern-certificate-canvas';
 import { Footer } from '~/components/footer';
 import { baseMeta } from '~/utils/meta';
 import { Intro } from './intro';
@@ -46,10 +47,11 @@ export const Home = () => {
   const projectOne = useRef();
   const projectTwo = useRef();
   const projectThree = useRef();
+  const projectFour = useRef();
   const details = useRef();
 
   useEffect(() => {
-    const sections = [intro, projectOne, projectTwo, projectThree, details];
+    const sections = [intro, projectOne, projectTwo, projectThree, projectFour, details];
 
     const sectionObserver = new IntersectionObserver(
       (entries, observer) => {
@@ -138,6 +140,26 @@ export const Home = () => {
         sectionRef={projectThree}
         visible={visibleSections.includes(projectThree.current)}
         index={3}
+        title="Amazon Externship — Operational Strategy & People Analytics"
+        description="Completed the Amazon Operational Strategy and People Analytics Externship through Extern. Analyzed early attrition in fulfillment centers using Python to create data tables, identify operational friction points, and design a measurable pilot solution — first real-world application of Python for business decision-making."
+        buttonText="View Certificate"
+        buttonLink="#"
+        model={{
+          type: 'laptop',
+          alt: 'Extern completion certificate',
+          textures: [
+            {
+              getCanvas: () => createExternCertificateCanvas(1280, 800),
+            },
+          ],
+        }}
+      />
+      <ProjectSummary
+        id="project-4"
+        alternate
+        sectionRef={projectFour}
+        visible={visibleSections.includes(projectFour.current)}
+        index={4}
         title="Cotton Care — Certified Internship"
         description="Completed a certified internship contributing to quality control and operations. Certificate awarded upon completion."
         buttonText="View Certificate"
