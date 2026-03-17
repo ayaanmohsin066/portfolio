@@ -11,10 +11,12 @@ const GROUND_Y = CANVAS_HEIGHT - 40;
 const PLAYER_X = 80;
 const GRAVITY = 0.6;
 const JUMP_FORCE = -12;
-const BASE_SPEED = 5;
+const BASE_SPEED = 2.5;
+const MAX_SPEED = 8.0;
 const SPEED_INCREASE = 0.15;
-const OBSTACLE_MIN_GAP = 400;
-const OBSTACLE_MAX_GAP = 600;
+const SPEED_INTERVAL = 20; // increase speed every N points
+const OBSTACLE_MIN_GAP = 500;
+const OBSTACLE_MAX_GAP = 750;
 const OBSTACLE_WIDTH = 20;
 const OBSTACLE_MIN_HEIGHT = 28;
 const OBSTACLE_MAX_HEIGHT = 50;
@@ -38,6 +40,7 @@ export function MiniGame() {
     gameOver: false,
     lastTime: 0,
     animId: null,
+    frameCount: 0,
   });
 
   const startGame = useCallback(() => {
@@ -105,9 +108,31 @@ export function MiniGame() {
       ctx.stroke();
       ctx.setLineDash([]);
 
-      // Player (white square)
+      // Player (pixel-art dinosaur)
+      const px = PLAYER_X;
+      const py = g.playerY;
+      const legCycle = (g.frameCount >> 2) % 2;
+      ctx.fillStyle = '#4CAF50';
+      // Body (main rectangle)
+      ctx.fillRect(px + 6, py + 8, 12, 14);
+      // Head (smaller rectangle top right)
+      ctx.fillRect(px + 14, py + 2, 8, 8);
+      // Eye (white dot)
       ctx.fillStyle = '#ffffff';
-      ctx.fillRect(PLAYER_X, g.playerY, PLAYER_SIZE, PLAYER_SIZE);
+      ctx.fillRect(px + 17, py + 5, 3, 3);
+      // Tail (triangle on left)
+      ctx.fillStyle = '#4CAF50';
+      ctx.beginPath();
+      ctx.moveTo(px + 2, py + 12);
+      ctx.lineTo(px + 6, py + 8);
+      ctx.lineTo(px + 6, py + 16);
+      ctx.closePath();
+      ctx.fill();
+      // Legs (alternate when running)
+      ctx.fillStyle = '#388E3C';
+      const legY = legCycle === 0 ? [py + 18, py + 20] : [py + 20, py + 18];
+      ctx.fillRect(px + 8, legY[0], 4, 6);
+      ctx.fillRect(px + 16, legY[1], 4, 6);
 
       // Obstacles (green)
       ctx.fillStyle = '#22c55e';
@@ -136,6 +161,7 @@ export function MiniGame() {
       g.lastTime = timestamp;
 
         if (!g.gameOver && g.started) {
+        g.frameCount += 1;
         // Gravity and jump
         g.playerVy += GRAVITY;
         g.playerY += g.playerVy;
@@ -168,7 +194,8 @@ export function MiniGame() {
 
         // Score (time-based)
         g.score += dt * 2;
-        g.speed = BASE_SPEED + Math.floor(g.score / 10) * SPEED_INCREASE;
+        const speedStep = Math.floor(g.score / SPEED_INTERVAL) * SPEED_INCREASE;
+        g.speed = Math.min(MAX_SPEED, BASE_SPEED + speedStep);
         const newScoreInt = Math.floor(g.score);
         if (newScoreInt !== g.lastScoreInt) {
           g.lastScoreInt = newScoreInt;
