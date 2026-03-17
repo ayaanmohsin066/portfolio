@@ -61,6 +61,11 @@
     vertical-align: bottom;
   }
 
+  .canvasPlaceholder {
+    display: block;
+    background-color: #0f0f0f;
+  }
+
   .actions {
     display: flex;
     flex-wrap: wrap;

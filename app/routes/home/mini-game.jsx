@@ -1,6 +1,7 @@
 import { Section } from '~/components/section';
 import { Heading } from '~/components/heading';
 import { useRef, useState, useEffect, useCallback } from 'react';
+import { useHydrated } from '~/hooks/useHydrated';
 import styles from './mini-game.module.css';
 
 const CANVAS_WIDTH = 640;
@@ -20,6 +21,7 @@ const OBSTACLE_MAX_HEIGHT = 50;
 
 export function MiniGame() {
   const canvasRef = useRef(null);
+  const hydrated = useHydrated();
   const [score, setScore] = useState(0);
   const [speed, setSpeed] = useState(BASE_SPEED);
   const [gameOver, setGameOver] = useState(false);
@@ -71,10 +73,14 @@ export function MiniGame() {
   }, [startGame, isPlaying]);
 
   useEffect(() => {
+    if (typeof window === 'undefined') return;
+    if (!hydrated) return;
+
     const canvas = canvasRef.current;
     if (!canvas) return;
 
     const ctx = canvas.getContext('2d');
+    if (!ctx) return;
     const dpr = Math.min(2, typeof window !== 'undefined' ? window.devicePixelRatio : 2);
     canvas.width = CANVAS_WIDTH * dpr;
     canvas.height = CANVAS_HEIGHT * dpr;
@@ -124,6 +130,7 @@ export function MiniGame() {
 
     const gameLoop = (timestamp) => {
       const g = gameRef.current;
+      const w = CANVAS_WIDTH;
       if (!g.animId) g.lastTime = timestamp;
       const dt = Math.min((timestamp - g.lastTime) / 16, 4);
       g.lastTime = timestamp;
@@ -195,13 +202,14 @@ export function MiniGame() {
       g.animId = requestAnimationFrame(gameLoop);
     };
 
-    g.animId = requestAnimationFrame(gameLoop);
+    gameRef.current.animId = requestAnimationFrame(gameLoop);
     return () => {
       if (gameRef.current.animId) cancelAnimationFrame(gameRef.current.animId);
     };
-  }, []);
+  }, [hydrated]);
 
   useEffect(() => {
+    if (typeof window === 'undefined') return;
     const handleKeyDown = (e) => {
       if (e.code === 'Space' || e.code === 'ArrowUp') {
         e.preventDefault();
@@ -227,14 +235,22 @@ export function MiniGame() {
           <span className={styles.stat}>Score: {score}</span>
         </div>
         <div className={styles.canvasWrap}>
-          <canvas
-            ref={canvasRef}
-            className={styles.canvas}
-            width={CANVAS_WIDTH}
-            height={CANVAS_HEIGHT}
-            style={{ width: CANVAS_WIDTH, height: CANVAS_HEIGHT }}
-            aria-label="Dino jump game: avoid green obstacles by jumping"
-          />
+          {hydrated ? (
+            <canvas
+              ref={canvasRef}
+              className={styles.canvas}
+              width={CANVAS_WIDTH}
+              height={CANVAS_HEIGHT}
+              style={{ width: CANVAS_WIDTH, height: CANVAS_HEIGHT }}
+              aria-label="Dino jump game: avoid green obstacles by jumping"
+            />
+          ) : (
+            <div
+              className={styles.canvasPlaceholder}
+              style={{ width: CANVAS_WIDTH, height: CANVAS_HEIGHT }}
+              aria-label="Mini game loading"
+            />
+          )}
         </div>
         <div className={styles.actions}>
           <button
