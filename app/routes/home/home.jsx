@@ -143,7 +143,7 @@ export const Home = () => {
         title="Amazon Externship — Operational Strategy & People Analytics"
         description="Completed the Amazon Operational Strategy and People Analytics Externship through Extern. Analyzed early attrition in fulfillment centers using Python to create data tables, identify operational friction points, and design a measurable pilot solution — first real-world application of Python for business decision-making."
         buttonText="View Certificate"
-        buttonLink="#"
+        buttonLink="https://www.linkedin.com/feed/update/urn:li:activity:7434141909956169728/"
         model={{
           type: 'laptop',
           alt: 'Extern completion certificate',
