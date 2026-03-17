@@ -1,0 +1,112 @@
+@layer components {
+  .miniGame {
+    width: 100%;
+    padding-top: var(--space4XL);
+    padding-bottom: var(--space4XL);
+    background-color: var(--background);
+  }
+
+  .content {
+    max-width: 680px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spaceM);
+  }
+
+  .label {
+    font-size: var(--fontSizeBodyS);
+    font-weight: var(--fontWeightMedium);
+    color: var(--primary);
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .emoji {
+    font-size: 1.1em;
+  }
+
+  .title {
+    color: var(--textTitle);
+    text-align: center;
+    margin-bottom: var(--spaceS);
+  }
+
+  .stats {
+    display: flex;
+    gap: var(--space2XL);
+    font-size: var(--fontSizeBodyM);
+    font-weight: var(--fontWeightMedium);
+    color: var(--primary);
+  }
+
+  .stat {
+    font-variant-numeric: tabular-nums;
+  }
+
+  .canvasWrap {
+    border: 2px solid color-mix(in lab, var(--primary) 40%, transparent);
+    border-radius: 8px;
+    overflow: hidden;
+    background-color: #0f0f0f;
+    box-shadow: 0 0 0 1px color-mix(in lab, var(--text) 15%, transparent);
+  }
+
+  .canvas {
+    display: block;
+    vertical-align: bottom;
+  }
+
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spaceM);
+    justify-content: center;
+    align-items: center;
+  }
+
+  .jumpBtn {
+    font: inherit;
+    font-weight: var(--fontWeightMedium);
+    padding: var(--spaceM) var(--spaceL);
+    border-radius: 6px;
+    border: 2px solid var(--primary);
+    background: color-mix(in lab, var(--primary) 15%, transparent);
+    color: var(--primary);
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease;
+  }
+
+  .jumpBtn:hover,
+  .jumpBtn:focus-visible {
+    background: var(--primary);
+    color: var(--background);
+    outline: none;
+  }
+
+  .playAgainBtn {
+    font: inherit;
+    font-weight: var(--fontWeightMedium);
+    padding: var(--spaceM) var(--spaceL);
+    border-radius: 6px;
+    border: none;
+    background: var(--primary);
+    color: var(--background);
+    cursor: pointer;
+    transition: opacity 0.2s ease, transform 0.1s ease;
+  }
+
+  .playAgainBtn:hover,
+  .playAgainBtn:focus-visible {
+    opacity: 0.9;
+    outline: none;
+  }
+
+  .playAgainBtn:active {
+    transform: scale(0.98);
+  }
+}

@@ -1,0 +1,261 @@
+import { Section } from '~/components/section';
+import { Heading } from '~/components/heading';
+import { useRef, useState, useEffect, useCallback } from 'react';
+import styles from './mini-game.module.css';
+
+const CANVAS_WIDTH = 640;
+const CANVAS_HEIGHT = 200;
+const PLAYER_SIZE = 24;
+const GROUND_Y = CANVAS_HEIGHT - 40;
+const PLAYER_X = 80;
+const GRAVITY = 0.6;
+const JUMP_FORCE = -12;
+const BASE_SPEED = 5;
+const SPEED_INCREASE = 0.15;
+const OBSTACLE_MIN_GAP = 400;
+const OBSTACLE_MAX_GAP = 600;
+const OBSTACLE_WIDTH = 20;
+const OBSTACLE_MIN_HEIGHT = 28;
+const OBSTACLE_MAX_HEIGHT = 50;
+
+export function MiniGame() {
+  const canvasRef = useRef(null);
+  const [score, setScore] = useState(0);
+  const [speed, setSpeed] = useState(BASE_SPEED);
+  const [gameOver, setGameOver] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const gameRef = useRef({
+    started: false,
+    playerY: GROUND_Y - PLAYER_SIZE,
+    playerVy: 0,
+    obstacles: [],
+    nextObstacleAt: 0,
+    score: 0,
+    lastScoreInt: -1,
+    speed: BASE_SPEED,
+    gameOver: false,
+    lastTime: 0,
+    animId: null,
+  });
+
+  const startGame = useCallback(() => {
+    const g = gameRef.current;
+    g.started = true;
+    g.playerY = GROUND_Y - PLAYER_SIZE;
+    g.playerVy = 0;
+    g.obstacles = [];
+    g.nextObstacleAt = 0;
+    g.score = 0;
+    g.lastScoreInt = -1;
+    g.speed = BASE_SPEED;
+    g.gameOver = false;
+    setScore(0);
+    setSpeed(BASE_SPEED);
+    setGameOver(false);
+    setIsPlaying(true);
+  }, []);
+
+  const jump = useCallback(() => {
+    const g = gameRef.current;
+    if (g.gameOver) {
+      startGame();
+      return;
+    }
+    if (!isPlaying) {
+      startGame();
+      return;
+    }
+    if (g.playerY >= GROUND_Y - PLAYER_SIZE - 2) {
+      g.playerVy = JUMP_FORCE;
+    }
+  }, [startGame, isPlaying]);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d');
+    const dpr = Math.min(2, typeof window !== 'undefined' ? window.devicePixelRatio : 2);
+    canvas.width = CANVAS_WIDTH * dpr;
+    canvas.height = CANVAS_HEIGHT * dpr;
+    ctx.scale(dpr, dpr);
+
+    const draw = () => {
+      const w = CANVAS_WIDTH;
+      const h = CANVAS_HEIGHT;
+      const g = gameRef.current;
+
+      // Dark background
+      ctx.fillStyle = '#0f0f0f';
+      ctx.fillRect(0, 0, w, h);
+
+      // Ground line (teal accent)
+      ctx.strokeStyle = '#14b8a6';
+      ctx.lineWidth = 2;
+      ctx.setLineDash([6, 6]);
+      ctx.beginPath();
+      ctx.moveTo(0, GROUND_Y + PLAYER_SIZE);
+      ctx.lineTo(w, GROUND_Y + PLAYER_SIZE);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      // Player (white square)
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(PLAYER_X, g.playerY, PLAYER_SIZE, PLAYER_SIZE);
+
+      // Obstacles (green)
+      ctx.fillStyle = '#22c55e';
+      g.obstacles.forEach(obs => {
+        ctx.fillRect(obs.x, obs.y, obs.width, obs.height);
+      });
+
+      if (g.gameOver) {
+        ctx.fillStyle = 'rgba(0,0,0,0.6)';
+        ctx.fillRect(0, 0, w, h);
+        ctx.fillStyle = '#14b8a6';
+        ctx.font = 'bold 28px system-ui, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('Game Over', w / 2, h / 2 - 10);
+        ctx.font = '16px system-ui, sans-serif';
+        ctx.fillStyle = '#e5e5e5';
+        ctx.fillText('Press Space or click Play again', w / 2, h / 2 + 20);
+      }
+    };
+
+    const gameLoop = (timestamp) => {
+      const g = gameRef.current;
+      if (!g.animId) g.lastTime = timestamp;
+      const dt = Math.min((timestamp - g.lastTime) / 16, 4);
+      g.lastTime = timestamp;
+
+        if (!g.gameOver && g.started) {
+        // Gravity and jump
+        g.playerVy += GRAVITY;
+        g.playerY += g.playerVy;
+        if (g.playerY >= GROUND_Y - PLAYER_SIZE) {
+          g.playerY = GROUND_Y - PLAYER_SIZE;
+          g.playerVy = 0;
+        }
+
+        // Spawn obstacles
+        g.nextObstacleAt -= g.speed * dt * 10;
+        if (g.nextObstacleAt <= 0) {
+          const height =
+            OBSTACLE_MIN_HEIGHT +
+            Math.random() * (OBSTACLE_MAX_HEIGHT - OBSTACLE_MIN_HEIGHT);
+          g.obstacles.push({
+            x: w,
+            y: GROUND_Y - height,
+            width: OBSTACLE_WIDTH,
+            height,
+          });
+          g.nextObstacleAt =
+            OBSTACLE_MIN_GAP + Math.random() * (OBSTACLE_MAX_GAP - OBSTACLE_MIN_GAP);
+        }
+
+        // Move obstacles
+        g.obstacles = g.obstacles.filter(obs => {
+          obs.x -= g.speed * dt * 2;
+          return obs.x + obs.width > 0;
+        });
+
+        // Score (time-based)
+        g.score += dt * 2;
+        g.speed = BASE_SPEED + Math.floor(g.score / 10) * SPEED_INCREASE;
+        const newScoreInt = Math.floor(g.score);
+        if (newScoreInt !== g.lastScoreInt) {
+          g.lastScoreInt = newScoreInt;
+          setScore(newScoreInt);
+          setSpeed(parseFloat(g.speed.toFixed(2)));
+        }
+
+        // Collision
+        const playerLeft = PLAYER_X + 4;
+        const playerRight = PLAYER_X + PLAYER_SIZE - 4;
+        const playerTop = g.playerY + 4;
+        const playerBottom = g.playerY + PLAYER_SIZE - 4;
+
+        for (const obs of g.obstacles) {
+          if (
+            playerRight > obs.x &&
+            playerLeft < obs.x + obs.width &&
+            playerBottom > obs.y &&
+            playerTop < obs.y + obs.height
+          ) {
+            g.gameOver = true;
+            setGameOver(true);
+            setIsPlaying(false);
+            setScore(Math.floor(g.score));
+            break;
+          }
+        }
+      }
+
+      draw();
+      g.animId = requestAnimationFrame(gameLoop);
+    };
+
+    g.animId = requestAnimationFrame(gameLoop);
+    return () => {
+      if (gameRef.current.animId) cancelAnimationFrame(gameRef.current.animId);
+    };
+  }, []);
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.code === 'Space' || e.code === 'ArrowUp') {
+        e.preventDefault();
+        if (gameOver) startGame();
+        else jump();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [jump, gameOver, startGame]);
+
+  return (
+    <Section className={styles.miniGame} as="section" id="mini-game">
+      <div className={styles.content}>
+        <span className={styles.label}>
+          Mini Game <span className={styles.emoji} aria-hidden>🎮</span>
+        </span>
+        <Heading className={styles.title} level={2}>
+          Take a Break!
+        </Heading>
+        <div className={styles.stats}>
+          <span className={styles.stat}>Speed: {speed.toFixed(2)}</span>
+          <span className={styles.stat}>Score: {score}</span>
+        </div>
+        <div className={styles.canvasWrap}>
+          <canvas
+            ref={canvasRef}
+            className={styles.canvas}
+            width={CANVAS_WIDTH}
+            height={CANVAS_HEIGHT}
+            style={{ width: CANVAS_WIDTH, height: CANVAS_HEIGHT }}
+            aria-label="Dino jump game: avoid green obstacles by jumping"
+          />
+        </div>
+        <div className={styles.actions}>
+          <button
+            type="button"
+            className={styles.jumpBtn}
+            onClick={jump}
+            aria-label="Jump"
+          >
+            Jump ↑
+          </button>
+          {gameOver && (
+            <button
+              type="button"
+              className={styles.playAgainBtn}
+              onClick={startGame}
+            >
+              Play again
+            </button>
+          )}
+        </div>
+      </div>
+    </Section>
+  );
+}

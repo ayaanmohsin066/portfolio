@@ -7,6 +7,7 @@ import { createExternCertificateCanvas } from '~/utils/extern-certificate-canvas
 import { Footer } from '~/components/footer';
 import { baseMeta } from '~/utils/meta';
 import { Intro } from './intro';
+import { MiniGame } from './mini-game';
 import { Profile } from './profile';
 import { ProjectSummary } from './project-summary';
 import { useEffect, useRef, useState } from 'react';
@@ -175,6 +176,7 @@ export const Home = () => {
           ],
         }}
       />
+      <MiniGame />
       <Profile
         sectionRef={details}
         visible={visibleSections.includes(details.current)}
