@@ -2,6 +2,7 @@ import { createLinkedInMockupCanvas } from '~/utils/linkedin-mockup-canvas';
 import { createCourseraPhone1Canvas, createCourseraPhone2Canvas } from '~/utils/coursera-phone-canvas';
 import { createExternCertificateCanvas } from '~/utils/extern-certificate-canvas';
 import { createCottonCareCanvas } from '~/utils/cotton-care-canvas';
+import { createOptionsPricerCanvas } from '~/utils/options-pricer-canvas';
 import { Footer } from '~/components/footer';
 import { baseMeta } from '~/utils/meta';
 import { Intro } from './intro';
@@ -47,10 +48,19 @@ export const Home = () => {
   const projectTwo = useRef();
   const projectThree = useRef();
   const projectFour = useRef();
+  const projectFive = useRef();
   const details = useRef();
 
   useEffect(() => {
-    const sections = [intro, projectOne, projectTwo, projectThree, projectFour, details];
+    const sections = [
+      intro,
+      projectOne,
+      projectTwo,
+      projectThree,
+      projectFour,
+      projectFive,
+      details,
+    ];
 
     const sectionObserver = new IntersectionObserver(
       (entries, observer) => {
@@ -170,6 +180,25 @@ export const Home = () => {
           textures: [
             {
               getCanvas: () => createCottonCareCanvas(1280, 800),
+            },
+          ],
+        }}
+      />
+      <ProjectSummary
+        id="project-5"
+        sectionRef={projectFive}
+        visible={visibleSections.includes(projectFive.current)}
+        index={5}
+        title="Black-Scholes Options Pricer"
+        description="A live financial calculator that prices European options contracts using the Nobel Prize-winning Black-Scholes model. Input market parameters — stock price, strike, volatility, days to expiry — and instantly get fair value for call and put contracts. Built at the intersection of Mathematics and Finance."
+        buttonText="Try it Live"
+        buttonLink="https://options-pricer-eosin.vercel.app/"
+        model={{
+          type: 'laptop',
+          alt: 'Black-Scholes options pricer dashboard',
+          textures: [
+            {
+              getCanvas: () => createOptionsPricerCanvas(1280, 800),
             },
           ],
         }}
