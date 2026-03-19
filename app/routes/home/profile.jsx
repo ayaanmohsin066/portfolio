@@ -59,6 +59,16 @@ export const Profile = ({ id, visible, sectionRef }) => {
               <ProfileText visible={visible} titleId={titleId} />
               <Button
                 secondary
+                className={styles.resumeButton}
+                data-visible={visible}
+                href="/static/Ayaan_Mohsin_resume.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                View Resume →
+              </Button>
+              <Button
+                secondary
                 className={styles.button}
                 data-visible={visible}
                 href="/contact"

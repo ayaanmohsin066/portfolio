@@ -141,3 +141,16 @@
     opacity: 1;
   }
 }
+
+.resumeButton {
+  margin-bottom: var(--spaceM);
+  opacity: 0;
+  color: var(--primary);
+  border-color: color-mix(in lab, var(--primary) 80%, transparent);
+  transition: opacity var(--durationXL) ease var(--durationL);
+
+  &[data-visible='true'] {
+    transform: none;
+    opacity: 1;
+  }
+}
