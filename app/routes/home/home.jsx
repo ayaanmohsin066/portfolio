@@ -1,9 +1,7 @@
-import sliceTextureLarge from '~/assets/slice-app-large.jpg';
-import sliceTexturePlaceholder from '~/assets/slice-app-placeholder.jpg';
-import sliceTexture from '~/assets/slice-app.jpg';
 import { createLinkedInMockupCanvas } from '~/utils/linkedin-mockup-canvas';
 import { createCourseraPhone1Canvas, createCourseraPhone2Canvas } from '~/utils/coursera-phone-canvas';
 import { createExternCertificateCanvas } from '~/utils/extern-certificate-canvas';
+import { createCottonCareCanvas } from '~/utils/cotton-care-canvas';
 import { Footer } from '~/components/footer';
 import { baseMeta } from '~/utils/meta';
 import { Intro } from './intro';
@@ -161,17 +159,17 @@ export const Home = () => {
         sectionRef={projectFour}
         visible={visibleSections.includes(projectFour.current)}
         index={4}
-        title="Cotton Care — Certified Internship"
+        title="Cotton Care Internship"
         description="Completed a certified internship contributing to quality control and operations. Certificate awarded upon completion."
         buttonText="View Certificate"
         buttonLink="/#details"
+        sectionColumnsGap="var(--space4XL)"
         model={{
           type: 'laptop',
-          alt: 'Cotton Care internship certificate',
+          alt: 'Cotton Care luxury operations dashboard',
           textures: [
             {
-              srcSet: `${sliceTexture} 800w, ${sliceTextureLarge} 1920w`,
-              placeholder: sliceTexturePlaceholder,
+              getCanvas: () => createCottonCareCanvas(1280, 800),
             },
           ],
         }}

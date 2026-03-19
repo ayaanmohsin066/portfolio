@@ -26,6 +26,8 @@
 
   .logo {
     display: flex;
+    align-items: center;
+    justify-content: center;
     position: relative;
     padding: var(--spaceS) var(--spaceS) var(--spaceL);
     z-index: var(--zIndex2);
@@ -33,6 +35,15 @@
     @media (--mediaMobile) {
       padding-bottom: var(--spaceS);
     }
+  }
+
+  .logoText {
+    color: #00d4ff;
+    font-size: 1.6rem;
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: 0.06em;
+    font-family: var(--fontStack);
   }
 
   .nav {

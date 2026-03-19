@@ -1,5 +1,4 @@
 import { Icon } from '~/components/icon';
-import { Monogram } from '~/components/monogram';
 import { useTheme } from '~/components/theme-provider';
 import { tokens } from '~/components/theme-provider/theme';
 import { Transition } from '~/components/transition';
@@ -144,13 +143,13 @@ export const Navbar = () => {
       <RouterLink
         unstable_viewTransition
         prefetch="intent"
-        to={location.pathname === '/' ? '/#intro' : '/'}
+        to="/"
         data-navbar-item
         className={styles.logo}
         aria-label={`${config.name}, ${config.role}`}
         onClick={handleMobileNavClick}
       >
-        <Monogram highlight />
+        <span className={styles.logoText}>AM</span>
       </RouterLink>
       <NavToggle onClick={() => setMenuOpen(!menuOpen)} menuOpen={menuOpen} />
       <nav className={styles.nav}>

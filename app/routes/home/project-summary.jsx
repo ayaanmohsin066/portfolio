@@ -29,6 +29,7 @@ export function ProjectSummary({
   buttonText,
   buttonLink,
   alternate,
+  sectionColumnsGap,
   ...rest
 }) {
   const [focused, setFocused] = useState(false);
@@ -42,6 +43,10 @@ export function ProjectSummary({
   const indexText = index < 10 ? `0${index}` : index;
   const phoneSizes = `(max-width: ${media.tablet}px) 30vw, 20vw`;
   const laptopSizes = `(max-width: ${media.tablet}px) 80vw, 40vw`;
+  const { style: sectionStyleProp, ...sectionRest } = rest;
+  const sectionStyle = sectionColumnsGap
+    ? cssProps({ sectionColumnsGap }, sectionStyleProp)
+    : sectionStyleProp;
 
   function handleModelLoad() {
     setModelLoaded(true);
@@ -186,7 +191,8 @@ export function ProjectSummary({
       ref={sectionRef}
       id={id}
       tabIndex={-1}
-      {...rest}
+      style={sectionStyle}
+      {...sectionRest}
     >
       <div className={styles.content}>
         <Transition in={sectionVisible || focused}>
